@@ -1,0 +1,8 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}No license is included with the package at this time.
+${licensePrefix}Copyright 2018, Finck (github.com/cfinck27) and Gryphon (github.com/GriffFr)
+<#if licenseLast??>
+${licenseLast}
+</#if>

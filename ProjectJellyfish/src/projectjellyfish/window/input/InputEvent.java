@@ -3,9 +3,13 @@
  * Copyright 2018, Finck (github.com/cfinck27) and Gryphon (github.com/GriffFr)
  */
 
-package projectjellyfish;
+package projectjellyfish.window.input;
 
-public class ProjectJellyfish
+
+public interface InputEvent
 {
-
+    
+    public Object getSource();
+    public String getType();
+    
 }
