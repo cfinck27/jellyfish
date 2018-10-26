@@ -19,6 +19,7 @@ public class GameTimeManager
     protected double delta = 0.0;
     protected double timestep = 1.0 / 60.0;
     protected double totalTime = 0.0;
+    protected int pTotalTicks = 0;
     protected int totalTicks = 0;
     
     
@@ -36,12 +37,14 @@ public class GameTimeManager
     {
         delta = gameTimer.stop();
         totalTime += delta;
+        pTotalTicks = totalTicks;
         totalTicks = (int) (totalTime / timestep);
     }
     
-    public double getDelta()
+    public void newFrame()
     {
-        return delta;
+        stopFrame();
+        startFrame();
     }
     
     public void setTimestep(double timestep)
@@ -52,11 +55,6 @@ public class GameTimeManager
     public double getTimestep()
     {
         return timestep;
-    }
-    
-    public int getTickDelta()
-    {
-        return (int) (delta / timestep);
     }
     
     public double getInterpDelta()
@@ -74,9 +72,14 @@ public class GameTimeManager
         return totalTicks;
     }
     
+    public int getElapsedTicks()
+    {
+        return (totalTicks - pTotalTicks);
+    }
+    
     public boolean isNewTick()
     {
-        return (int) ((totalTime - delta) / timestep) != (int) (totalTime / timestep);
+        return (totalTicks > pTotalTicks);
     }
     
 }

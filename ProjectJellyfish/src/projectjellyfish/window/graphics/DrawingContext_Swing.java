@@ -110,7 +110,7 @@ public class DrawingContext_Swing extends DrawingContext
 	}
 	else
 	{
-	    fps++;
+	    ++fps;
 	}
 	
 	Window_Swing.doInSwing(() ->
