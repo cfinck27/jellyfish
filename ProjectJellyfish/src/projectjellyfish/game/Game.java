@@ -6,8 +6,7 @@
 package projectjellyfish.game;
 
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import projectjellyfish.debug.JLog;
 import projectjellyfish.game.world.World;
 import projectjellyfish.window.Window;
 import projectjellyfish.window.Window_Swing;
@@ -29,8 +28,10 @@ public class Game implements Runnable
         return instance;
     }
     
-    protected World world;
+    protected JLog log;
     protected Window window;
+    
+    protected World world;
     protected GameTimeManager ticks;
     
     private double x = 0.0;
@@ -38,13 +39,16 @@ public class Game implements Runnable
     
     private Game()
     {
-        
     }
     
     private void setup()
     {
-        world = new World();
+        log = new JLog(System.out);
+        log.setOutputFile("gamelog" + System.currentTimeMillis() + ".log");
+        
 	window = new Window_Swing("Project Jellyfish", 500, 500);
+        
+        world = new World();
         ticks = new GameTimeManager();
         ticks.setTimestep(1.0 / 60.0);
     }
@@ -77,6 +81,9 @@ public class Game implements Runnable
         
         window.show();
         
+        log.println("This is a test...");
+        log.println("Yet another test...");
+        
         System.out.println("Timestep: " + ticks.getTimestep());
         long start = System.currentTimeMillis();
         
@@ -105,6 +112,11 @@ public class Game implements Runnable
             
             ticks.newFrame();
 	}
+    }
+    
+    public JLog getLog()
+    {
+        return log;
     }
     
 }
