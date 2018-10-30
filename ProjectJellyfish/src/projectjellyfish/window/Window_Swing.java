@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -21,7 +22,7 @@ import projectjellyfish.util.Vec2i;
 import projectjellyfish.window.graphics.DrawingContext_Swing;
 import projectjellyfish.window.input.InputListener;
 
-public class Window_Swing extends Window implements ComponentListener
+public class Window_Swing extends Window implements ComponentListener, java.awt.event.KeyListener
 {
 
     protected class Window_JFrame extends JFrame
@@ -149,4 +150,30 @@ public class Window_Swing extends Window implements ComponentListener
     {
         // FIXME: actually add input listener
     }
+    
+    @Override
+    public boolean isKeyDown(int kc)
+    {
+        
+        
+        return false;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e)
+    {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e)
+    {
+        
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+        
+    }
+    
 }

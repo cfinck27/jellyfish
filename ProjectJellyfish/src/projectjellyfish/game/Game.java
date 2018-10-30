@@ -7,6 +7,7 @@ package projectjellyfish.game;
 
 
 import projectjellyfish.debug.JLog;
+import projectjellyfish.game.messaging.Console;
 import projectjellyfish.game.world.World;
 import projectjellyfish.window.Window;
 import projectjellyfish.window.Window_Swing;
@@ -29,6 +30,8 @@ public class Game implements Runnable
     }
     
     protected JLog log;
+    protected Console console;
+    protected Thread conThread;
     protected Window window;
     
     protected World world;
@@ -45,6 +48,10 @@ public class Game implements Runnable
     {
         log = new JLog(System.out);
         log.setOutputFile("gamelog" + System.currentTimeMillis() + ".log");
+        
+        console = new Console(System.in, System.out);
+        conThread = new Thread(console);
+        conThread.start();
         
 	window = new Window_Swing("Project Jellyfish", 500, 500);
         
@@ -85,15 +92,15 @@ public class Game implements Runnable
         log.println("Yet another test...");
         
         System.out.println("Timestep: " + ticks.getTimestep());
-        long start = System.currentTimeMillis();
         
         ticks.startFrame();
         
         while (true)
 	{
+            console.pollMessages();
+            
             for (int i = 0; i < ticks.getElapsedTicks(); i++)
             {
-                //System.out.println(ticks.getTotalTicks() + " : " + ((System.currentTimeMillis() - start) / 1000.0));
                 update();
                 draw();
             }
@@ -117,6 +124,11 @@ public class Game implements Runnable
     public JLog getLog()
     {
         return log;
+    }
+    
+    public Console getConsole()
+    {
+        return console;
     }
     
 }

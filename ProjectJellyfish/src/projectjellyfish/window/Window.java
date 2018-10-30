@@ -33,4 +33,6 @@ public abstract class Window
     public abstract void present();
     
     public abstract void addInputListener(InputListener l);
+    
+    public abstract boolean isKeyDown(int kc);
 }
