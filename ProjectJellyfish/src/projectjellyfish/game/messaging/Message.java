@@ -14,6 +14,7 @@ public class Message
     public Message(Object source, String msgText)
     {
         this.source = source;
+        this.msgText = msgText;
     }
     
     public Object getSource()
@@ -26,7 +27,7 @@ public class Message
         return msgText;
     }
     
-    public boolean isEqual(Message other)
+    public boolean equals(Message other)
     {
         return msgText.equals(other.getMessageText());
     }

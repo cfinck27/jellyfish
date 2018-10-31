@@ -9,9 +9,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import projectjellyfish.game.Game;
 
 public class Console extends Thread
@@ -34,7 +34,7 @@ public class Console extends Thread
         in = new Scanner(inStream);
         out = new PrintWriter(outStream);
         
-        msgQueue = new PriorityQueue<>();
+        msgQueue = new ConcurrentLinkedQueue<>();
         messageTable = new HashMap<>();
     }
     
@@ -77,22 +77,50 @@ public class Console extends Thread
         postMessage(new Message(this, cmd));
     }
     
-    public void pollMessages()
+    protected boolean pollSingleMessage()
     {
-        Message next;
-        while ((next = msgQueue.poll()) != null)
+        Message next = msgQueue.poll();
+        if (next == null)
         {
-            MessageCallback callback = messageTable.get(next.getMessageText());
-            if (callback != null)
+            return false;
+        }
+        
+        MessageCallback callback = messageTable.get(next.getMessageText());
+        if (callback != null)
+        {
+            callback.trigger();
+        }
+        else
+        {
+            out.println("Command not found.");
+            out.flush();
+        }
+        
+        return true;
+    }
+    
+    public void pollMessages(int max)
+    {
+        int i;
+        for (i = 0; (max < 0) || (i < max); i++)
+        {
+            if (!pollSingleMessage())
             {
-                callback.trigger();
-            }
-            else
-            {
-                out.println("Command not found.");
-                out.flush();
+                break;
             }
         }
+        /*
+        if (i > 0)
+        {
+            Game.getInstance().getLog().println(i + " messages polled.");
+        }
+        */
+    }
+    
+    
+    public void pollMessages()
+    {
+        pollMessages(-1);
     }
     
     @Override
