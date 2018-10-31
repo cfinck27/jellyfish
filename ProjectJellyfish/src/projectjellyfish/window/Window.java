@@ -23,6 +23,7 @@ public abstract class Window
 	return graphics;
     }
     
+    public abstract void close();
     public abstract void show();
     public abstract void hide();
     public abstract boolean isVisible();

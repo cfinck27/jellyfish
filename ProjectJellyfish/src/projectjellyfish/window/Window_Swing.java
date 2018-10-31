@@ -15,6 +15,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -100,13 +101,18 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     @Override
     public void componentShown(ComponentEvent e)
     {
-	
+        
     }
 
     @Override
     public void componentHidden(ComponentEvent e)
     {
 	
+    }
+    
+    public void close()
+    {
+        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
     }
     
     @Override

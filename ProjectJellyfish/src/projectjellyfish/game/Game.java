@@ -6,8 +6,11 @@
 package projectjellyfish.game;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import projectjellyfish.debug.JLog;
 import projectjellyfish.game.messaging.Console;
+import projectjellyfish.game.messaging.MessageCallback;
 import projectjellyfish.game.world.World;
 import projectjellyfish.window.Window;
 import projectjellyfish.window.Window_Swing;
@@ -37,6 +40,8 @@ public class Game implements Runnable
     protected World world;
     protected GameTimeManager ticks;
     
+    protected boolean isExiting = false;
+    
     private double x = 0.0;
     
     
@@ -45,7 +50,7 @@ public class Game implements Runnable
     }
     
     private void setup()
-    {
+    {   
         log = new JLog(System.out);
         log.setOutputFile("gamelog" + System.currentTimeMillis() + ".log");
         
@@ -58,6 +63,21 @@ public class Game implements Runnable
         world = new World();
         ticks = new GameTimeManager();
         ticks.setTimestep(1.0 / 60.0);
+        
+        console.addCommand("exit", new MessageCallback(this, "exit"));
+    }
+    
+    private void shutdown()
+    {
+        window.close();
+        try
+        {
+            conThread.join(1000);
+        }
+        catch (InterruptedException ex)
+        {
+            log.println("GAME: Thread interrupted while shutting down.");
+        }
     }
     
     private void update()
@@ -95,7 +115,7 @@ public class Game implements Runnable
         
         ticks.startFrame();
         
-        while (true)
+        while (!instance.isExiting())
 	{
             console.pollMessages();
             
@@ -119,6 +139,8 @@ public class Game implements Runnable
             
             ticks.newFrame();
 	}
+        
+        shutdown();
     }
     
     public JLog getLog()
@@ -129,6 +151,16 @@ public class Game implements Runnable
     public Console getConsole()
     {
         return console;
+    }
+    
+    public boolean isExiting()
+    {
+        return isExiting;
+    }
+    
+    public void exit()
+    {
+        isExiting = true;
     }
     
 }

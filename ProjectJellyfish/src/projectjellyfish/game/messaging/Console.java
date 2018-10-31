@@ -126,7 +126,7 @@ public class Console extends Thread
     @Override
     public void run()
     {
-        while (true)
+        while (!Game.getInstance().isExiting())
         {
             pollCommands();
         }
