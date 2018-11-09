@@ -7,8 +7,6 @@ package projectjellyfish.game.messaging;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import projectjellyfish.game.Game;
 
 public class MessageCallback
@@ -50,7 +48,7 @@ public class MessageCallback
         {
             try
             {
-                method.invoke(target, null);
+                method.invoke(target, (Object[]) null);
             }
             catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
             {

@@ -19,9 +19,12 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import projectjellyfish.debug.JLog;
+import projectjellyfish.game.Game;
 import projectjellyfish.util.Vec2i;
 import projectjellyfish.window.graphics.DrawingContext_Swing;
 import projectjellyfish.window.input.InputListener;
+import projectjellyfish.window.input.KeyEnum;
 
 public class Window_Swing extends Window implements ComponentListener, java.awt.event.KeyListener
 {
@@ -60,7 +63,13 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
 	    frame.pack();
 
 	    frame.addComponentListener(this);
-
+            frame.addKeyListener(this);
+            
+            frame.setFocusable(true);
+            mainPane.setFocusable(false);
+            secondaryPane.setFocusable(false);
+            canvas.setFocusable(false);
+            
 	    frame.setLocationRelativeTo(null);
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -95,21 +104,21 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     @Override
     public void componentMoved(ComponentEvent e)
     {
-	
     }
 
     @Override
     public void componentShown(ComponentEvent e)
     {
-        
+        Game.getInstance().getLog().println("Component Shown!");
     }
 
     @Override
     public void componentHidden(ComponentEvent e)
     {
-	
+	Game.getInstance().getLog().println("Component Hidden!");
     }
     
+    @Override
     public void close()
     {
         frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
@@ -152,6 +161,15 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     }
     
     @Override
+    public void pollEvents()
+    {
+        
+        
+        // update key states after polling events
+        keyStates.updateStates();
+    }
+    
+    @Override
     public void addInputListener(InputListener l)
     {
         // FIXME: actually add input listener
@@ -160,26 +178,26 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     @Override
     public boolean isKeyDown(int kc)
     {
-        
-        
-        return false;
+        return keyStates.getKeyState(KeyEnum.getKeyByCode(kc)).isPressed() ||
+               keyStates.getKeyState(KeyEnum.getKeyByCode(kc)).isHeld();
     }
 
     @Override
     public void keyTyped(KeyEvent e)
     {
+        // nothing
     }
 
     @Override
     public void keyPressed(KeyEvent e)
     {
-        
+        keyStates.press(KeyEnum.getKeyByCode(e.getKeyCode()));
     }
 
     @Override
     public void keyReleased(KeyEvent e)
     {
-        
+        keyStates.release(KeyEnum.getKeyByCode(e.getKeyCode()));
     }
     
 }

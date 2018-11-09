@@ -6,8 +6,6 @@
 package projectjellyfish.game;
 
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import projectjellyfish.debug.JLog;
 import projectjellyfish.game.messaging.Console;
 import projectjellyfish.game.messaging.MessageCallback;
@@ -118,6 +116,7 @@ public class Game implements Runnable
         while (!instance.isExiting())
 	{
             console.pollMessages();
+            window.pollEvents();
             
             for (int i = 0; i < ticks.getElapsedTicks(); i++)
             {

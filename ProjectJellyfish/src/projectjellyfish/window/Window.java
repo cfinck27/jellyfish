@@ -9,13 +9,16 @@ package projectjellyfish.window;
 import projectjellyfish.util.Vec2i;
 import projectjellyfish.window.graphics.DrawingContext;
 import projectjellyfish.window.input.InputListener;
+import projectjellyfish.window.input.KeyStateManager;
 
 public abstract class Window
 {
     protected DrawingContext graphics;
+    protected KeyStateManager keyStates;
     
     public Window()
     {
+        keyStates = new KeyStateManager();
     }
     
     public DrawingContext getGraphics()
@@ -32,6 +35,8 @@ public abstract class Window
     public abstract Vec2i getSize();
     
     public abstract void present();
+    
+    public abstract void pollEvents();
     
     public abstract void addInputListener(InputListener l);
     
