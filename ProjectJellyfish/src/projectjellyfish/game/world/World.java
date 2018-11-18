@@ -13,10 +13,12 @@ import projectjellyfish.game.world.entity.UpdateEntity;
 public class World
 {
     
+    protected Player player;
     protected EntityManager<UpdateEntity> ent_update = new EntityManager<>();
     
     public World()
     {
+        player = new Player();
     }
     
     public void register(Entity e)

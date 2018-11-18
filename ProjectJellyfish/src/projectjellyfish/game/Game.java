@@ -152,6 +152,11 @@ public class Game implements Runnable
         return console;
     }
     
+    public Window getWindow()
+    {
+        return window;
+    }
+    
     public boolean isExiting()
     {
         return isExiting;

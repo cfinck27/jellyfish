@@ -14,17 +14,16 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import projectjellyfish.debug.JLog;
 import projectjellyfish.game.Game;
 import projectjellyfish.util.Vec2i;
 import projectjellyfish.window.graphics.DrawingContext_Swing;
-import projectjellyfish.window.input.InputListener;
 import projectjellyfish.window.input.KeyEnum;
+import projectjellyfish.window.input.KeyEvent;
+import projectjellyfish.window.input.KeyState;
 
 public class Window_Swing extends Window implements ComponentListener, java.awt.event.KeyListener
 {
@@ -163,16 +162,10 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     @Override
     public void pollEvents()
     {
-        
+        keyStates.pollKeyEvents();
         
         // update key states after polling events
         keyStates.updateStates();
-    }
-    
-    @Override
-    public void addInputListener(InputListener l)
-    {
-        // FIXME: actually add input listener
     }
     
     @Override
@@ -183,21 +176,29 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     }
 
     @Override
-    public void keyTyped(KeyEvent e)
+    public void keyTyped(java.awt.event.KeyEvent e)
     {
         // nothing
     }
 
     @Override
-    public void keyPressed(KeyEvent e)
+    public void keyPressed(java.awt.event.KeyEvent e)
     {
-        keyStates.press(KeyEnum.getKeyByCode(e.getKeyCode()));
+        KeyState pre = keyStates.getKeyState(KeyEnum.getKeyByCode(e.getKeyCode()));
+        KeyState post = new KeyState(pre);
+        post.press();
+        KeyEvent out = new KeyEvent(this, pre, post);
+        this.fireKeyEvent(out);
     }
 
     @Override
-    public void keyReleased(KeyEvent e)
+    public void keyReleased(java.awt.event.KeyEvent e)
     {
-        keyStates.release(KeyEnum.getKeyByCode(e.getKeyCode()));
+        KeyState pre = keyStates.getKeyState(KeyEnum.getKeyByCode(e.getKeyCode()));
+        KeyState post = new KeyState(pre);
+        post.release();
+        KeyEvent out = new KeyEvent(this, pre, post);
+        this.fireKeyEvent(out);
     }
     
 }

@@ -23,9 +23,20 @@ public class KeyState
         state = KEYSTATE_INACTIVE;
     }
     
+    public KeyState(final KeyState s)
+    {
+        key = s.getKey();
+        state = s.getState();
+    }
+    
     public KeyEnum getKey()
     {
         return key;
+    }
+    
+    public byte getState()
+    {
+        return state;
     }
     
     public boolean isPressed()
@@ -65,4 +76,9 @@ public class KeyState
         }
     }
     
+    @Override
+    public String toString()
+    {
+        return "" + key + " : " + state;
+    }
 }

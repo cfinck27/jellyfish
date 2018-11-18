@@ -5,10 +5,16 @@
 
 package projectjellyfish.window.input;
 
+
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import projectjellyfish.game.Game;
+
 public class KeyStateManager
 {
     
     protected KeyState[] states;
+    protected Queue<KeyEvent> evtQueue = new ConcurrentLinkedQueue<>();
     
     public KeyStateManager()
     {
@@ -31,7 +37,7 @@ public class KeyStateManager
         return null;
     }
     
-    public void press(KeyEnum key)
+    private void press(KeyEnum key)
     {
         KeyState state = getKeyState(key);
         if (!state.isPressed() && !state.isHeld())
@@ -40,7 +46,7 @@ public class KeyStateManager
         }
     }
     
-    public void release(KeyEnum key)
+    private void release(KeyEnum key)
     {
         KeyState state = getKeyState(key);
         if (state.isPressed() || state.isHeld())
@@ -55,6 +61,27 @@ public class KeyStateManager
         {
             s.update();
         }
+    }
+    
+    public void pollKeyEvents()
+    {
+        KeyEvent evt;
+        while ((evt = evtQueue.poll()) != null)
+        {
+            if (evt.getNewState().getState() == KeyState.KEYSTATE_PRESSED)
+            {
+                this.press(evt.getNewState().getKey());
+            }
+            else if (evt.getNewState().getState() == KeyState.KEYSTATE_RELEASED)
+            {
+                this.release(evt.getNewState().getKey());
+            }
+        }
+    }
+    
+    public void fireKeyEvent(KeyEvent evt)
+    {
+        evtQueue.offer(evt);
     }
     
 }
