@@ -116,6 +116,7 @@ public class Game implements Runnable
         while (!instance.isExiting())
 	{
             console.pollMessages();
+            window.pollEvents();
             
             for (int i = 0; i < ticks.getElapsedTicks(); i++)
             {
@@ -149,6 +150,11 @@ public class Game implements Runnable
     public Console getConsole()
     {
         return console;
+    }
+    
+    public Window getWindow()
+    {
+        return window;
     }
     
     public boolean isExiting()

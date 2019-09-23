@@ -8,19 +8,15 @@ package projectjellyfish.window.input;
 
 public class KeyEvent implements InputEvent
 {
-    
-    public static final byte KEY_DOWN = 1;
-    public static final byte KEY_UP = 2;
-    
-    
     protected Object source;
-    protected byte keyAction;
-    protected int keyCode;
+    protected KeyState oldState;
+    protected KeyState newState;
     
-    public KeyEvent(Object source, byte keyAction, int keyCode)
+    public KeyEvent(Object source, KeyState oldState, KeyState newState)
     {
         this.source = source;
-        this.keyAction = keyAction;
+        this.oldState = oldState;
+        this.newState = newState;
     }
     
     @Override
@@ -35,13 +31,19 @@ public class KeyEvent implements InputEvent
         return "KEY_EVENT";
     }
     
-    public byte getKeyAction()
+    public KeyState getOldState()
     {
-        return keyAction;
+        return oldState;
     }
     
-    public int getKeyCode()
+    public KeyState getNewState()
     {
-        return keyCode;
+        return newState;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "" + oldState + " -> " + newState;
     }
 }

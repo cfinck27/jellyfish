@@ -14,14 +14,16 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import projectjellyfish.game.Game;
 import projectjellyfish.util.Vec2i;
 import projectjellyfish.window.graphics.DrawingContext_Swing;
-import projectjellyfish.window.input.InputListener;
+import projectjellyfish.window.input.KeyEnum;
+import projectjellyfish.window.input.KeyEvent;
+import projectjellyfish.window.input.KeyState;
 
 public class Window_Swing extends Window implements ComponentListener, java.awt.event.KeyListener
 {
@@ -60,7 +62,13 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
 	    frame.pack();
 
 	    frame.addComponentListener(this);
-
+            frame.addKeyListener(this);
+            
+            frame.setFocusable(true);
+            mainPane.setFocusable(false);
+            secondaryPane.setFocusable(false);
+            canvas.setFocusable(false);
+            
 	    frame.setLocationRelativeTo(null);
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -95,21 +103,21 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     @Override
     public void componentMoved(ComponentEvent e)
     {
-	
     }
 
     @Override
     public void componentShown(ComponentEvent e)
     {
-        
+        Game.getInstance().getLog().println("Component Shown!");
     }
 
     @Override
     public void componentHidden(ComponentEvent e)
     {
-	
+	Game.getInstance().getLog().println("Component Hidden!");
     }
     
+    @Override
     public void close()
     {
         frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
@@ -152,34 +160,45 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     }
     
     @Override
-    public void addInputListener(InputListener l)
+    public void pollEvents()
     {
-        // FIXME: actually add input listener
+        keyStates.pollKeyEvents();
+        
+        // update key states after polling events
+        keyStates.updateStates();
     }
     
     @Override
     public boolean isKeyDown(int kc)
     {
-        
-        
-        return false;
+        return keyStates.getKeyState(KeyEnum.getKeyByCode(kc)).isPressed() ||
+               keyStates.getKeyState(KeyEnum.getKeyByCode(kc)).isHeld();
     }
 
     @Override
-    public void keyTyped(KeyEvent e)
+    public void keyTyped(java.awt.event.KeyEvent e)
     {
+        // nothing
     }
 
     @Override
-    public void keyPressed(KeyEvent e)
+    public void keyPressed(java.awt.event.KeyEvent e)
     {
-        
+        KeyState pre = keyStates.getKeyState(KeyEnum.getKeyByCode(e.getKeyCode()));
+        KeyState post = new KeyState(pre);
+        post.press();
+        KeyEvent out = new KeyEvent(this, pre, post);
+        this.fireKeyEvent(out);
     }
 
     @Override
-    public void keyReleased(KeyEvent e)
+    public void keyReleased(java.awt.event.KeyEvent e)
     {
-        
+        KeyState pre = keyStates.getKeyState(KeyEnum.getKeyByCode(e.getKeyCode()));
+        KeyState post = new KeyState(pre);
+        post.release();
+        KeyEvent out = new KeyEvent(this, pre, post);
+        this.fireKeyEvent(out);
     }
     
 }
