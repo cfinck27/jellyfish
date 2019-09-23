@@ -1,14 +1,12 @@
 /*
- * No license is included with the package at this time.
- * Copyright 2018, Finck (github.com/cfinck27) and Gryphon (github.com/GriffFr)
+ * Copyright (c) 2019 Chris Finck
+ * All Rights Reserved.
  */
 
 package projectjellyfish.game.messaging;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import projectjellyfish.game.Game;
 
 public class MessageCallback
@@ -22,7 +20,7 @@ public class MessageCallback
         this.target = target;
         method = null;
         
-	Class c = target.getClass();
+	Class<?> c = target.getClass();
 	do
 	{
 	    try
@@ -50,7 +48,7 @@ public class MessageCallback
         {
             try
             {
-                method.invoke(target, null);
+                method.invoke(target);
             }
             catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
             {
