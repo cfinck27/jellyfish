@@ -6,7 +6,14 @@
 package projectjellyfish.game;
 
 
-import projectjellyfish.debug.JLog;
+//import projectjellyfish.debug.JLog;
+import java.io.File;
+import java.io.FileNotFoundException;
+import projectjellyfish.debug.logging.LogChannelFileOutput;
+import projectjellyfish.debug.logging.LogChannelStandardOutput;
+import projectjellyfish.debug.logging.Logger;
+import projectjellyfish.debug.logging.StandardLogChannel;
+import projectjellyfish.debug.logging.StandardLogger;
 import projectjellyfish.game.messaging.Console;
 import projectjellyfish.game.messaging.MessageCallback;
 import projectjellyfish.game.world.World;
@@ -30,7 +37,10 @@ public class Game implements Runnable
         return instance;
     }
     
-    protected JLog log;
+    //protected JLog log;
+    protected Logger logger;
+    public static String LOG_GENERAL = "GENERAL";
+    
     protected Console console;
     protected Thread conThread;
     protected Window window;
@@ -49,8 +59,12 @@ public class Game implements Runnable
     
     private void setup()
     {   
-        log = new JLog(System.out);
-        log.setOutputFile("gamelog" + System.currentTimeMillis() + ".log");
+        //log = new JLog(System.out);
+        //log.setOutputFile("gamelog" + System.currentTimeMillis() + ".log");
+        logger = new StandardLogger();
+        logger.addChannel(LOG_GENERAL, new StandardLogChannel());
+        logger.getChannel(LOG_GENERAL).addOutput(new LogChannelStandardOutput());
+        try { logger.getChannel(LOG_GENERAL).addOutput(new LogChannelFileOutput(new File("general.log"))); } catch (FileNotFoundException ex) { }
         
         console = new Console(System.in, System.out);
         conThread = new Thread(console);
@@ -74,7 +88,8 @@ public class Game implements Runnable
         }
         catch (InterruptedException ex)
         {
-            log.println("GAME: Thread interrupted while shutting down.");
+            //log.println("GAME: Thread interrupted while shutting down.");
+            logger.getChannel(LOG_GENERAL).log("Thread interrupted while shutting down.");
         }
     }
     
@@ -106,10 +121,10 @@ public class Game implements Runnable
         
         window.show();
         
-        log.println("This is a test...");
-        log.println("Yet another test...");
+        logger.getChannel(LOG_GENERAL).log("This is a test..");
+        logger.getChannel(LOG_GENERAL).log("Yet another test...");
         
-        System.out.println("Timestep: " + ticks.getTimestep());
+        logger.getChannel(LOG_GENERAL).log("Timestep: " + ticks.getTimestep());
         
         ticks.startFrame();
         
@@ -142,9 +157,15 @@ public class Game implements Runnable
         shutdown();
     }
     
+    /*
     public JLog getLog()
     {
         return log;
+    }*/
+    
+    public Logger getLogger()
+    {
+        return logger;
     }
     
     public Console getConsole()

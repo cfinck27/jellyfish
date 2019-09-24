@@ -12,10 +12,17 @@ import java.util.HashMap;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import projectjellyfish.debug.logging.LogChannel;
+import projectjellyfish.debug.logging.LogChannelStandardOutput;
+import projectjellyfish.debug.logging.StandardLogChannel;
 import projectjellyfish.game.Game;
+import static projectjellyfish.game.Game.LOG_GENERAL;
 
 public class Console extends Thread
 {
+    
+    protected static LogChannel log;
+    public static String LOG_CONSOLE = "CONSOLE";
     
     protected InputStream inStream;
     protected OutputStream outStream;
@@ -28,6 +35,10 @@ public class Console extends Thread
     
     public Console(InputStream inStream, OutputStream outStream)
     {
+        Game.getInstance().getLogger().addChannel(LOG_CONSOLE, new StandardLogChannel());
+        Game.getInstance().getLogger().getChannel(LOG_CONSOLE).addOutput(new LogChannelStandardOutput());
+        log = Game.getInstance().getLogger().getChannel(LOG_CONSOLE);
+        
         this.inStream = inStream;
         this.outStream = outStream;
         
@@ -46,7 +57,7 @@ public class Console extends Thread
             return true;
         }
         
-        Game.getInstance().getLog().println("CONSOLE: Failed to add command '" + name + "'.");
+        //Game.getInstance().getLog().println("CONSOLE: Failed to add command '" + name + "'.");
         return false;
     }
     

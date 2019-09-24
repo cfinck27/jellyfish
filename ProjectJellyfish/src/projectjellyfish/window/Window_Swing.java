@@ -18,7 +18,11 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import projectjellyfish.debug.logging.LogChannel;
+import projectjellyfish.debug.logging.LogChannelStandardOutput;
+import projectjellyfish.debug.logging.StandardLogChannel;
 import projectjellyfish.game.Game;
+import static projectjellyfish.game.messaging.Console.LOG_CONSOLE;
 import projectjellyfish.util.Vec2i;
 import projectjellyfish.window.graphics.DrawingContext_Swing;
 import projectjellyfish.window.input.KeyEnum;
@@ -27,7 +31,7 @@ import projectjellyfish.window.input.KeyState;
 
 public class Window_Swing extends Window implements ComponentListener, java.awt.event.KeyListener
 {
-
+    
     protected class Window_JFrame extends JFrame
     {
 	public Window_JFrame(String title)
@@ -37,6 +41,9 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     }
     
     
+    protected LogChannel log;
+    public static String LOG_WINDOW = "WINDOW";
+    
     protected Window_JFrame frame;
     protected JPanel mainPane;
     protected JPanel secondaryPane;
@@ -44,6 +51,10 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     
     public Window_Swing(String title, int w, int h)
     {
+        Game.getInstance().getLogger().addChannel(LOG_WINDOW, new StandardLogChannel());
+        Game.getInstance().getLogger().getChannel(LOG_WINDOW).addOutput(new LogChannelStandardOutput());
+        log = Game.getInstance().getLogger().getChannel(LOG_WINDOW);
+        
 	doInSwing(() ->
 	{
 	    frame = new Window_JFrame(title);
@@ -86,7 +97,8 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
 	}
 	catch (InterruptedException | InvocationTargetException ex)
 	{
-	    System.err.println("Window_Swing: Error while invoking runnable in swing thread");
+	    //System.err.println("Window_Swing: Error while invoking runnable in swing thread");
+            Game.getInstance().getLogger().getChannel(LOG_WINDOW).log("Error while invoking runnable in swing thread!");
 	}
     }
     
@@ -108,13 +120,15 @@ public class Window_Swing extends Window implements ComponentListener, java.awt.
     @Override
     public void componentShown(ComponentEvent e)
     {
-        Game.getInstance().getLog().println("Component Shown!");
+        //Game.getInstance().getLog().println("Component Shown!");
+        log.log("Component Shown!");
     }
 
     @Override
     public void componentHidden(ComponentEvent e)
     {
-	Game.getInstance().getLog().println("Component Hidden!");
+	//Game.getInstance().getLog().println("Component Hidden!");
+        log.log("Component Hidden!");
     }
     
     @Override

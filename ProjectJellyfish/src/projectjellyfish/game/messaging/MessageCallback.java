@@ -7,10 +7,13 @@ package projectjellyfish.game.messaging;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import projectjellyfish.debug.logging.LogChannel;
 import projectjellyfish.game.Game;
 
 public class MessageCallback
 {
+    
+    protected static LogChannel log;
     
     protected Object target;
     protected Method method;
@@ -31,14 +34,16 @@ public class MessageCallback
 	    }
 	    catch (NoSuchMethodException ex)
 	    {
-		Game.getInstance().getLog().println("Method missing from class " + c);
+		//Game.getInstance().getLog().println("Method missing from class " + c);
+                log.log("Method missing from class " + c);
 	    }
 	}
 	while ((c = c.getSuperclass()) != null);
 	
 	if (method == null)
 	{
-            Game.getInstance().getLog().println("MessageCallback: No such method exists -> " + methodName);
+            //Game.getInstance().getLog().println("MessageCallback: No such method exists -> " + methodName);
+            log.log("MessageCallback: No such method exists -> " + methodName);
         }
     }
     
@@ -52,12 +57,14 @@ public class MessageCallback
             }
             catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
             {
-                Game.getInstance().getLog().println("MESSAGE_CALLBACK: Error invoking callback.");
+                //Game.getInstance().getLog().println("MESSAGE_CALLBACK: Error invoking callback.");
+                log.log("MESSAGE_CALLBACK: Error invoking callback.");
             }
         }
         else
         {
-            Game.getInstance().getLog().println("MESSAGE_CALLBACK: Tried to call method that didn't exist.");
+            //Game.getInstance().getLog().println("MESSAGE_CALLBACK: Tried to call method that didn't exist.");
+            log.log("MESSAGE_CALLBACK: Tried to call method that didn't exist.");
         }
     }
     
